@@ -156,5 +156,6 @@ Recommenders turn data into predictions by looking at a user’s preferences and
 
 Bias and unfairness can show up in systems like this when they rely too heavily on a few obvious features or when the data itself is limited. If one genre or mood is overrepresented, the system may keep recommending similar songs and make other kinds of music less likely to appear. That is important because recommender systems can quietly shape what people discover, and that can limit variety or reinforce existing habits.
 
-
+## Personal Reflection 
+The biggest learning moment during the project was learning how much data is used when it comes to these platforms. When I use Spotify, I get a lot of good reccomendation songs but I never knew how much work is put behind the scenes in order to create those playlists and reccomednations. Using AI really helped me quickly experiment my reccomednation systems, and let me know what worked and what didnt along with showing me the use cases with various personas. Next time if I did this project again I would want to create a cool interface to see it come to life and have things like the artist playlist show, or a cool UI experience being developed. 
 

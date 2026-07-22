@@ -1,59 +1,70 @@
-# 🎵 Music Recommender Simulation
+#  🎵 VibeCheck AI: Applied Music Recommendation System
 
 ## Project Summary
 
-In this project you will build and explain a small music recommender system.
+VibeCheck AI extends my Module 3 Music Recommender Simulation into a complete Applied AI System. The original project recommended songs using structured user preferences such as genre, mood, energy, and acoustic preference. This upgraded version allows users to describe the type of music they want using natural language.
 
-Your goal is to:
+The system interprets a user's request, converts it into structured music preferences, retrieves relevant songs from the dataset, ranks them using a recommendation algorithm, explains why each song was selected, and validates the results using built-in reliability checks before displaying recommendations.
 
-- Represent songs and a user "taste profile" as data
-- Design a scoring rule that turns that data into recommendations
-- Evaluate what your system gets right and wrong
-- Reflect on how this mirrors real world AI recommenders
+---
+## AI Features 
+This project extends the original recommender by integrating several AI-inspired components into one workflow.
 
-Replace this paragraph with your own summary of what your version does.
+Natural Language Preference Parsing
+
+Instead of manually entering structured preferences, users can type requests such as:
+
+I want upbeat pop music for a workout.
+
+The system extracts music preferences including:
+
+   - Genre
+   - Mood
+   - Energy level
+   - Acoustic preference
+
+These structured preferences are then passed directly into the recommendation engine.
+
+Recommendation Engine
+
+Each song is scored using multiple attributes including:
+
+   - Genre
+   - Mood
+   - Energy
+   - Acousticness
+
+Songs that better match the user's preferences receive higher scores and are ranked from best to worst.
+
+Reliability Guardrails
+
+Before recommendations are displayed, the system automatically checks for:
+
+   - Duplicate recommendations
+   - Invalid recommendation scores
+   - Missing song titles
+   - Missing recommendation explanations
+   - Too few recommendations returned
+
+If any reliability checks fail, the user receives an error instead of potentially incorrect recommendations.
+
+Evaluation Harness
+
+The project also includes an automated evaluation script that tests multiple predefined music requests to verify that:
+
+  - Natural-language parsing works correctly.
+  - Recommendations are generated successfully.
+  - Guardrails behave as expected.
+  - Empty input is rejected safely.
 
 ---
 
-## How The System Works
+## How the System Works 
+This project is a content-based music recommender. The user starts by typing a request in natural language, such as "I want upbeat pop music for a workout." The system uses a preference parser to identify important information like genre, mood, energy level, and whether the user prefers acoustic music.
 
-Explain your design in plain language.
+Once the preferences are identified, the recommender compares them to every song in the dataset. Each song is given a score based on how closely it matches the user's preferences. Songs with higher scores are ranked first and returned to the user along with an explanation of why they were recommended.
 
-Some prompts to answer:
-
-- What features does each `Song` use in your system
-  - For example: genre, mood, energy, tempo
-- What information does your `UserProfile` store
-- How does your `Recommender` compute a score for each song
-- How do you choose which songs to recommend
-
-You can include a simple diagram or bullet list if helpful.
-
-Real-world recommendation systems use different types of data to figure out what users might want to listen to next. For example, Spotify looks at things like a user's listening history, liked songs, playlists, and the characteristics of the songs they listen to. In this project, I am building a **content-based recommender**, which means the system recommends songs by comparing a user's preferences to the features of each song instead of comparing them to other users.
-
-For example, if a user mostly listens to pop music, the recommender can recognize that they prefer the **pop** genre and suggest other pop songs. It can also compare features like **energy** to recommend songs with a similar intensity and **tempo** to find songs with a similar pace. **Mood** is another important feature because it helps match the overall vibe of the music. Although the dataset includes other features like **acousticness**, my recommender will mainly use **genre, mood, energy, and tempo** because I think those features best describe the kind of music someone is looking for.
-
-Here is the scoring model:
-
-Start each song with a score of 0.
-
-If the song genre matches the user's favorite genre:
-add 2.0 points
-
-If the song mood matches the user's favorite mood:
-add 1.0 point
-
-Add energy similarity:
-1 - abs(song energy - target energy)
-
-Add tempo similarity:
-1 - abs(song tempo - target tempo) / 100
-
-After scoring every song:
-sort songs from highest score to lowest score
-recommend the top songs
-
----
+Before the recommendations are displayed, the system runs reliability checks to make sure there are no duplicate songs, missing explanations, invalid scores, or too few recommendations. An evaluation script is also included to test the system on several sample requests and verify that everything works correctly.
 
 ## Getting Started
 
@@ -61,86 +72,87 @@ recommend the top songs
 
 1. Create a virtual environment (optional but recommended):
 
-   ```bash
-   python -m venv .venv
-   source .venv/bin/activate      # Mac or Linux
-   .venv\Scripts\activate         # Windows
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
 
-2. Install dependencies
+2. Install the required packages:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-3. Run the app:
+3. Run the application:
 
 ```bash
-python -m src.main
+python3 src/main.py
 ```
 
 ### Running Tests
 
-Run the starter tests with:
+Run the unit tests:
 
 ```bash
-pytest
+python3 -m pytest -v
 ```
 
-You can add more tests in `tests/test_recommender.py`.
+### Running the Evaluation Script
 
----
+Run the end-to-end evaluation:
 
+```bash
+python3 evaluation/evaluate_system.py
+```
 ## Sample Recommendation Output
-Top recommendations:
 
-1. Sunrise City
-   Score: 4.28
-   Why: Matches your preferences: genre match (+2.0), mood match (+1.0), energy similarity (+0.98), less acoustic (+0.3)
-----------------------------------------
-2. Gym Hero
-   Score: 3.17
-   Why: Matches your preferences: genre match (+2.0), energy similarity (+0.87), less acoustic (+0.3)
-----------------------------------------
-3. Rooftop Lights
-   Score: 2.26
-   Why: Matches your preferences: mood match (+1.0), energy similarity (+0.96), less acoustic (+0.3)
-----------------------------------------
-4. Neon Pulse
-   Score: 1.26
-   Why: Matches your preferences: energy similarity (+0.96), less acoustic (+0.3)
-----------------------------------------
-5. Night Drive Loop
-   Score: 1.25
-   Why: Matches your preferences: energy similarity (+0.95), less acoustic (+0.3)
+```text
+=== VibeCheck AI ===
+
+Describe the kind of music you're looking for:
+> I want upbeat pop music for a workout.
+
+AI interpreted your request as:
+
+{
+    "genre": "pop",
+    "mood": "energetic",
+    "energy": 0.9,
+    "likes_acoustic": False
+}
+
+Reliability check: PASSED
+
+=== Your Personalized Recommendations ===
+
+1. Gym Hero by Max Pulse
+   Score: 3.24
+   Why: Matches your preferences: genre match (+1.0), energy similarity (+1.94), less acoustic (+0.3)
+
+2. Sunrise City by Neon Echo
+   Score: 3.14
+   Why: Matches your preferences: genre match (+1.0), energy similarity (+1.84), less acoustic (+0.3)
+
+3. Storm Runner by Voltline
+   Score: 2.28
+   Why: Matches your preferences: energy similarity (+1.98), less acoustic (+0.3)
+```
 
 ---
 
-## Experiments You Tried
+## Experiments 
 ----------------------------------------
 
-#TERMINAL OUTPUT FOR EACH PROFILE RECCOMENDATION 
-=== Trap profile ===
-User preferences: {'genre': 'hip-hop', 'mood': 'sad', 'energy': 0.1, 'likes_acoustic': True}
-1. Sunset Strings
-   Score: 1.38
-   Why: Matches your preferences: energy similarity (+0.88), acoustic preference (+0.5)
-----------------------------------------
-2. Spacewalk Thoughts
-   Score: 1.32
-   Why: Matches your preferences: energy similarity (+0.82), acoustic preference (+0.5)
-----------------------------------------
-3. Library Rain
-   Score: 1.25
-   Why: Matches your preferences: energy similarity (+0.75), acoustic preference (+0.5)
-----------------------------------------
-4. Blue Midnight
-   Score: 1.25
-   Why: Matches your preferences: energy similarity (+0.75), acoustic preference (+0.5)
-----------------------------------------
-5. Coffee Shop Stories
-   Score: 1.23
-   Why: Matches your preferences: energy similarity (+0.73), acoustic preference (+0.5)
-----------------------------------------
+I tested the recommender using several different types of music requests to make sure the parser and recommendation engine behaved consistently.
+
+Some example requests included:
+
+- "I want upbeat pop music for a workout."
+- "Give me calm acoustic music for studying."
+- "I want relaxing songs before bed."
+- "Give me something interesting."
+
+I also tested invalid input, such as an empty request, to verify that the guardrails correctly rejected it. Finally, I used the evaluation script to automatically run several predefined test cases and confirm that the parser, recommender, and reliability checks worked together correctly.
 
 ---
 
@@ -152,10 +164,11 @@ This recommender has a few important limitations. It only works with a small cat
 
 ## Reflection
 
-Recommenders turn data into predictions by looking at a user’s preferences and comparing them to the features of available items. In this project, that meant giving songs points based on things like genre, mood, energy, and acousticness, then ranking them to choose the best matches. I learned that even a simple recommender can make decisions that feel surprisingly personal, because it is using patterns in the data to guess what a user might enjoy next.
+This project helped me better understand how recommendation systems work and how AI can be used to improve a simple application. My original recommender used structured user preferences, but I expanded it into a more complete AI system by adding a natural-language preference parser, reliability guardrails, and an evaluation script.
 
-Bias and unfairness can show up in systems like this when they rely too heavily on a few obvious features or when the data itself is limited. If one genre or mood is overrepresented, the system may keep recommending similar songs and make other kinds of music less likely to appear. That is important because recommender systems can quietly shape what people discover, and that can limit variety or reinforce existing habits.
+One thing I learned is that building an AI system is more than just generating recommendations. It's also important to make sure the system is reliable and produces consistent results. Adding automated tests and guardrails helped make the recommendations more trustworthy.
 
-## Personal Reflection 
-The biggest learning moment during the project was learning how much data is used when it comes to these platforms. When I use Spotify, I get a lot of good reccomendation songs but I never knew how much work is put behind the scenes in order to create those playlists and reccomednations. Using AI really helped me quickly experiment my reccomednation systems, and let me know what worked and what didnt along with showing me the use cases with various personas. Next time if I did this project again I would want to create a cool interface to see it come to life and have things like the artist playlist show, or a cool UI experience being developed. 
+AI was very helpful throughout the project. It helped me brainstorm new features, debug problems, and create additional tests. At the same time, I learned that I couldn't accept every suggestion without checking it. Some suggestions introduced import errors or placed code in the wrong files, so I had to test everything and make corrections myself.
+
+Overall, this project gave me a much better understanding of how recommendation systems, natural-language processing, and software testing all work together to create a reliable AI application.
 

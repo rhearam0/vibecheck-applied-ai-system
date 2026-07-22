@@ -1,7 +1,5 @@
 """
-Command line runner for the Music Recommender Simulation.
-
-This file helps you quickly run and test your recommender.
+Command line runner for the VibeCheck AI music recommender.
 """
 
 from pathlib import Path
@@ -9,54 +7,60 @@ import sys
 
 if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from preference_parser import parse_music_request
     from recommender import load_songs, recommend_songs
 else:
+    from .preference_parser import parse_music_request
     from .recommender import load_songs, recommend_songs
 
 
-def print_profile_results(songs, profile_name: str, user_prefs: dict, k: int = 5) -> None:
+def print_profile_results(
+    songs,
+    profile_name: str,
+    user_prefs: dict,
+    k: int = 5,
+) -> None:
+    """Print ranked recommendations for one user profile."""
     print(f"\n=== {profile_name} ===")
     print(f"User preferences: {user_prefs}")
+
     recommendations = recommend_songs(user_prefs, songs, k=k)
 
     for index, rec in enumerate(recommendations, start=1):
         song, score, explanation = rec
-        print(f"{index}. {song['title']}")
+
+        print(f"{index}. {song['title']} by {song['artist']}")
         print(f"   Score: {score:.2f}")
         print(f"   Why: {explanation}")
         print("-" * 40)
 
 
 def main() -> None:
+    """Run the interactive VibeCheck AI recommendation workflow."""
     project_root = Path(__file__).resolve().parent.parent
-    songs = load_songs(str(project_root / "data" / "songs.csv"))
+    songs_path = project_root / "data" / "songs.csv"
+    songs = load_songs(str(songs_path))
 
-    profiles = [
-        ("Starter example", {"genre": "pop", "mood": "happy", "energy": 0.8}),
-        (
-            "Conflicting mood and energy",
-            {"genre": "pop", "mood": "sad", "energy": 0.9, "likes_acoustic": False},
-        ),
-        (
-            "Genre-mood mismatch",
-            {"genre": "rock", "mood": "happy", "energy": 0.2, "likes_acoustic": True},
-        ),
-        (
-            "Extreme boundary profile",
-            {"genre": "jazz", "mood": "chill", "energy": 1.0, "likes_acoustic": True},
-        ),
-        (
-            "Empty or weak preferences",
-            {"genre": "", "mood": "", "energy": 0.5, "likes_acoustic": False},
-        ),
-        (
-            "Trap profile",
-            {"genre": "hip-hop", "mood": "sad", "energy": 0.1, "likes_acoustic": True},
-        ),
-    ]
+    print("\n=== VibeCheck AI ===")
 
-    for profile_name, user_prefs in profiles:
-        print_profile_results(songs, profile_name, user_prefs)
+    request = input(
+        "Describe the kind of music you're looking for:\n> "
+    )
+
+    try:
+        parsed_preferences = parse_music_request(request)
+
+        print("\nAI interpreted your request as:")
+        print(parsed_preferences)
+
+        print_profile_results(
+            songs,
+            "Your Personalized Recommendations",
+            parsed_preferences,
+        )
+
+    except (TypeError, ValueError) as error:
+        print(f"\nInput error: {error}")
 
 
 if __name__ == "__main__":
